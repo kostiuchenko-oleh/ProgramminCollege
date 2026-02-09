@@ -1,2 +1,1 @@
 # ProgramminCollegeOlegKostiuchenko
-bla bla bla
