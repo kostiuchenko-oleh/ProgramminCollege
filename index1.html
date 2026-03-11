@@ -913,9 +913,8 @@
         if (state.accounts.every((v) => v === 0)) {
           // Current player can't move → they lose
           const loser = state.currentPlayer;
-          const winner = loser === 0 ? 0 : 1;
-          const winnerName =
-            winner === 0 ? state.playerName : state.opponentName;
+          const winner = loser === 0 ? 1 : 0;
+          const winnerName = winner === 0 ? state.playerName : state.opponentName;
           const loserName = loser === 0 ? state.playerName : state.opponentName;
 
           state.gameOver = true;
