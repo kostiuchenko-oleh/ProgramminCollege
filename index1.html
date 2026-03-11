@@ -1,0 +1,1042 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crisis Management 💰</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;600&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0a0a0f;
+        --panel: #111118;
+        --border: #1e1e2e;
+        --accent: #f0b429;
+        --accent2: #e05a2b;
+        --safe: #2eb872;
+        --danger: #e03b3b;
+        --text: #d4d4e0;
+        --muted: #6b6b80;
+        --glow: 0 0 24px rgba(240, 180, 41, 0.18);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "IBM Plex Mono", monospace;
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      /* Animated grid background */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(240, 180, 41, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(240, 180, 41, 0.03) 1px, transparent 1px);
+        background-size: 48px 48px;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .scanline {
+        position: fixed;
+        inset: 0;
+        background: repeating-linear-gradient(
+          to bottom,
+          transparent 0,
+          transparent 3px,
+          rgba(0, 0, 0, 0.08) 3px,
+          rgba(0, 0, 0, 0.08) 4px
+        );
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .container {
+        position: relative;
+        z-index: 2;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 32px 24px 60px;
+      }
+
+      /* Header */
+      header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-bottom: 28px;
+        border-bottom: 1px solid var(--border);
+        position: relative;
+      }
+
+      header::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        height: 2px;
+        background: var(--accent);
+        box-shadow: 0 0 12px var(--accent);
+      }
+
+      .coin-emoji {
+        font-size: 3rem;
+        display: block;
+        margin-bottom: 8px;
+        animation: float 3s ease-in-out infinite;
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+
+      h1 {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(2.8rem, 8vw, 5rem);
+        letter-spacing: 4px;
+        color: var(--accent);
+        text-shadow:
+          0 0 40px rgba(240, 180, 41, 0.4),
+          0 2px 0 rgba(0, 0, 0, 0.8);
+        line-height: 1;
+        margin-bottom: 6px;
+      }
+
+      .subtitle {
+        font-size: 0.75rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 14px;
+      }
+
+      h2.authors {
+        font-family: "Space Mono", monospace;
+        font-size: 0.78rem;
+        color: var(--muted);
+        letter-spacing: 2px;
+        font-weight: 400;
+      }
+      h2.authors span {
+        color: var(--accent2);
+      }
+
+      /* Legend */
+      .legend {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent2);
+        padding: 18px 22px;
+        margin-bottom: 30px;
+        font-size: 0.78rem;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+      .legend h3 {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.1rem;
+        letter-spacing: 2px;
+        color: var(--accent2);
+        margin-bottom: 8px;
+      }
+      .legend strong {
+        color: var(--text);
+      }
+
+      /* Setup Panel */
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        padding: 24px;
+        margin-bottom: 20px;
+      }
+
+      .panel-title {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.2rem;
+        letter-spacing: 3px;
+        color: var(--accent);
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .panel-title::before {
+        content: "";
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        background: var(--accent);
+        transform: rotate(45deg);
+        box-shadow: 0 0 8px var(--accent);
+      }
+
+      .field-row {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+        align-items: center;
+      }
+
+      label {
+        font-size: 0.7rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--muted);
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      input[type="text"],
+      input[type="number"] {
+        background: #0d0d14;
+        border: 1px solid var(--border);
+        border-bottom: 2px solid var(--accent);
+        color: var(--text);
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 0.9rem;
+        padding: 8px 12px;
+        outline: none;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+        width: 100%;
+      }
+      input[type="text"]:focus,
+      input[type="number"]:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(240, 180, 41, 0.12);
+      }
+
+      .field {
+        flex: 1;
+        min-width: 140px;
+      }
+
+      /* Accounts row */
+      .accounts-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+
+      .account-card {
+        background: #0d0d14;
+        border: 1px solid var(--border);
+        padding: 16px;
+        text-align: center;
+        position: relative;
+        transition: border-color 0.2s;
+      }
+      .account-card.active-account {
+        border-color: var(--accent);
+        box-shadow: var(--glow);
+      }
+
+      .account-label {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.1rem;
+        letter-spacing: 2px;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+
+      .account-val {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 2.4rem;
+        color: var(--accent);
+        text-shadow: 0 0 16px rgba(240, 180, 41, 0.3);
+        line-height: 1;
+        margin-bottom: 8px;
+      }
+
+      .account-input {
+        width: 100%;
+        text-align: center;
+        font-size: 1.1rem !important;
+      }
+
+      /* Buttons */
+      .btn {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1rem;
+        letter-spacing: 3px;
+        padding: 11px 26px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.18s;
+        position: relative;
+        overflow: hidden;
+      }
+      .btn::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.06);
+        opacity: 0;
+        transition: opacity 0.15s;
+      }
+      .btn:hover::after {
+        opacity: 1;
+      }
+      .btn:active {
+        transform: scale(0.97);
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: #0a0a0f;
+        box-shadow: 0 0 20px rgba(240, 180, 41, 0.3);
+      }
+      .btn-primary:hover {
+        box-shadow: 0 0 30px rgba(240, 180, 41, 0.5);
+      }
+      .btn-primary:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+
+      .btn-danger {
+        background: var(--accent2);
+        color: #fff;
+        box-shadow: 0 0 16px rgba(224, 90, 43, 0.3);
+      }
+
+      .btn-safe {
+        background: var(--safe);
+        color: #0a0a0f;
+      }
+
+      .btn-ghost {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--muted);
+      }
+      .btn-ghost:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .btn-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      /* Move controls */
+      .move-section {
+        display: flex;
+        gap: 14px;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+
+      /* Game log */
+      .game-log {
+        background: #060609;
+        border: 1px solid var(--border);
+        padding: 16px;
+        height: 200px;
+        overflow-y: auto;
+        font-size: 0.75rem;
+        line-height: 1.8;
+        font-family: "Space Mono", monospace;
+      }
+      .game-log::-webkit-scrollbar {
+        width: 4px;
+      }
+      .game-log::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .game-log::-webkit-scrollbar-thumb {
+        background: var(--border);
+      }
+
+      .log-entry {
+        padding: 2px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      }
+      .log-entry.player {
+        color: var(--safe);
+      }
+      .log-entry.bot {
+        color: var(--accent);
+      }
+      .log-entry.system {
+        color: var(--muted);
+        font-style: italic;
+      }
+      .log-entry.winner {
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 0.85rem;
+      }
+
+      /* State display */
+      .state-display {
+        padding: 16px;
+        background: #060609;
+        border: 1px solid var(--border);
+        margin-bottom: 14px;
+        font-size: 0.8rem;
+        line-height: 1.7;
+      }
+
+      .xor-display {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.8rem;
+        letter-spacing: 3px;
+        text-align: center;
+        padding: 10px;
+        margin-bottom: 14px;
+      }
+      .xor-zero {
+        color: var(--danger);
+        text-shadow: 0 0 16px rgba(224, 59, 59, 0.4);
+      }
+      .xor-nonzero {
+        color: var(--safe);
+        text-shadow: 0 0 16px rgba(46, 184, 114, 0.4);
+      }
+
+      .winner-banner {
+        text-align: center;
+        padding: 24px;
+        background: linear-gradient(
+          135deg,
+          rgba(240, 180, 41, 0.1),
+          rgba(224, 90, 43, 0.1)
+        );
+        border: 1px solid var(--accent);
+        box-shadow: var(--glow);
+        display: none;
+        animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      @keyframes popIn {
+        from {
+          transform: scale(0.85);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .winner-banner.show {
+        display: block;
+      }
+      .winner-name {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 3rem;
+        letter-spacing: 4px;
+        color: var(--accent);
+        text-shadow: 0 0 30px rgba(240, 180, 41, 0.5);
+      }
+      .winner-sub {
+        font-size: 0.75rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+
+      .turn-indicator {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1rem;
+        letter-spacing: 3px;
+        padding: 8px 16px;
+        display: inline-block;
+      }
+      .turn-player {
+        background: rgba(46, 184, 114, 0.15);
+        color: var(--safe);
+        border: 1px solid var(--safe);
+      }
+      .turn-bot {
+        background: rgba(240, 180, 41, 0.15);
+        color: var(--accent);
+        border: 1px solid var(--accent);
+      }
+
+      /* Tooltip / info box */
+      .info-box {
+        font-size: 0.7rem;
+        color: var(--muted);
+        padding: 8px 12px;
+        border-left: 2px solid var(--border);
+        margin-top: 8px;
+      }
+
+      .tag {
+        display: inline-block;
+        font-size: 0.6rem;
+        letter-spacing: 2px;
+        padding: 2px 8px;
+        text-transform: uppercase;
+      }
+      .tag-robo {
+        background: rgba(224, 90, 43, 0.15);
+        color: var(--accent2);
+        border: 1px solid var(--accent2);
+      }
+      .tag-human {
+        background: rgba(46, 184, 114, 0.15);
+        color: var(--safe);
+        border: 1px solid var(--safe);
+      }
+
+      hr {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 20px 0;
+      }
+
+      @media (max-width: 600px) {
+        .accounts-row {
+          grid-template-columns: 1fr;
+        }
+        .field-row {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scanline"></div>
+    <div class="container">
+      <!-- HEADER -->
+      <header>
+        <span class="coin-emoji">💰</span>
+        <h1>Crisis Management</h1>
+        <p class="subtitle">The Financial Blockchain Game</p>
+        <h2 class="authors">
+          Authors: <span>Claude Sonnet</span> &amp; <span>Anthropic AI</span>
+        </h2>
+      </header>
+
+      <!-- LEGEND -->
+      <div class="legend">
+        <h3>📋 Game Legend</h3>
+        <strong>Scenario:</strong> A financial company with 3 accounts is in
+        crisis. Two managers take turns transferring funds to the Bitcoin
+        blockchain. The manager who <strong>cannot move</strong> (all accounts
+        are zero) is <strong>fired</strong>.<br /><br />
+        <strong>Rules:</strong> On your turn, pick any account with coins and
+        transfer any non-zero amount. The player who empties the last coins wins
+        — the other is fired!<br /><br />
+        <strong>Strategy:</strong> Use the <strong>XOR-equilibrium</strong> of
+        all three accounts. If XOR = 0, you're in a losing position. If XOR ≠ 0,
+        you can force a win!
+      </div>
+
+      <!-- SETUP -->
+      <div class="panel" id="setupPanel">
+        <div class="panel-title">Setup Game</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Your Name</label>
+            <input
+              type="text"
+              id="playerName"
+              value="Manager A"
+              placeholder="Your name"
+            />
+          </div>
+          <div class="field">
+            <label>Opponent Name</label>
+            <input
+              type="text"
+              id="opponentName"
+              value="Robo1"
+              placeholder="Robo1 / Robo2 / Robo3 / human"
+            />
+          </div>
+        </div>
+        <div class="info-box">
+          Enter <strong>Robo1</strong> for random bot ·
+          <strong>Robo2</strong> for smart bot with mistakes ·
+          <strong>Robo3</strong> for perfect bot
+        </div>
+        <hr />
+        <div class="panel-title">Initial Accounts</div>
+        <div class="accounts-row">
+          <div class="account-card">
+            <div class="account-label">Account A</div>
+            <input
+              type="number"
+              class="account-input"
+              id="initA"
+              value="7"
+              min="0"
+            />
+          </div>
+          <div class="account-card">
+            <div class="account-label">Account B</div>
+            <input
+              type="number"
+              class="account-input"
+              id="initB"
+              value="5"
+              min="0"
+            />
+          </div>
+          <div class="account-card">
+            <div class="account-label">Account C</div>
+            <input
+              type="number"
+              class="account-input"
+              id="initC"
+              value="3"
+              min="0"
+            />
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="startBtn" onclick="startGame()">
+            ▶ Start Game
+          </button>
+          <button class="btn btn-ghost" onclick="randomAccounts()">
+            ⚄ Random Accounts
+          </button>
+        </div>
+      </div>
+
+      <!-- GAME AREA -->
+      <div id="gameArea" style="display: none">
+        <div class="panel">
+          <div class="panel-title">Game State</div>
+
+          <!-- Turn & XOR -->
+          <div
+            style="
+              display: flex;
+              gap: 12px;
+              align-items: center;
+              flex-wrap: wrap;
+              margin-bottom: 14px;
+            "
+          >
+            <div id="turnIndicator" class="turn-indicator turn-player">
+              YOUR TURN
+            </div>
+            <div
+              id="xorDisplay"
+              class="xor-display xor-nonzero"
+              style="
+                margin: 0;
+                font-size: 1.1rem;
+                padding: 8px 16px;
+                border: 1px solid var(--border);
+              "
+            >
+              XOR = 0
+            </div>
+          </div>
+
+          <!-- Accounts display -->
+          <div class="accounts-row" id="accountsDisplay">
+            <div class="account-card" id="cardA">
+              <div class="account-label">Account A</div>
+              <div class="account-val" id="valA">0</div>
+            </div>
+            <div class="account-card" id="cardB">
+              <div class="account-label">Account B</div>
+              <div class="account-val" id="valB">0</div>
+            </div>
+            <div class="account-card" id="cardC">
+              <div class="account-label">Account C</div>
+              <div class="account-val" id="valC">0</div>
+            </div>
+          </div>
+
+          <!-- Move controls -->
+          <div class="move-section">
+            <div class="field" style="min-width: 120px">
+              <label>Choose Account</label>
+              <select
+                id="chooseAccount"
+                style="
+                  background: #0d0d14;
+                  border: 1px solid var(--border);
+                  border-bottom: 2px solid var(--accent);
+                  color: var(--text);
+                  font-family: &quot;IBM Plex Mono&quot;, monospace;
+                  font-size: 0.9rem;
+                  padding: 8px 12px;
+                  outline: none;
+                  width: 100%;
+                "
+              >
+                <option value="0">Account A</option>
+                <option value="1">Account B</option>
+                <option value="2">Account C</option>
+              </select>
+            </div>
+            <div class="field" style="min-width: 100px">
+              <label>Amount to Transfer</label>
+              <input
+                type="number"
+                id="moveAmount"
+                value="1"
+                min="1"
+                placeholder="Amount"
+              />
+            </div>
+            <button class="btn btn-primary" id="moveBtn" onclick="playerMove()">
+              ⚡ Transfer
+            </button>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-ghost" onclick="resetGame()">
+              ↺ New Game
+            </button>
+            <button class="btn btn-ghost" onclick="showHint()">💡 Hint</button>
+          </div>
+
+          <div
+            id="hintBox"
+            class="info-box"
+            style="display: none; margin-top: 10px"
+          ></div>
+        </div>
+
+        <!-- Winner banner -->
+        <div class="winner-banner" id="winnerBanner">
+          <div class="winner-name" id="winnerName">WINNER</div>
+          <div class="winner-sub" id="winnerSub">is NOT fired</div>
+          <br />
+          <button
+            class="btn btn-primary"
+            style="margin-top: 10px"
+            onclick="resetGame()"
+          >
+            ▶ Play Again
+          </button>
+        </div>
+
+        <!-- Log -->
+        <div class="panel">
+          <div class="panel-title">Transaction Log</div>
+          <div class="game-log" id="gameLog"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ============================================================
+      //  IoC Architecture: event-driven, dependency-injected bots
+      // ============================================================
+
+      // --- Core game state (single source of truth) ---
+      const state = {
+        accounts: [0, 0, 0],
+        currentPlayer: 0, // 0 = human, 1 = bot
+        playerName: "",
+        opponentName: "",
+        botType: null, // 'robo1' | 'robo2' | 'robo3' | null
+        gameOver: false,
+        moveCount: 0,
+      };
+
+      // --- Equilibrium function: XOR-sum of all accounts ---
+      function equilibrium(a, b, c) {
+        return a ^ b ^ c;
+      }
+
+      // --- Bot Strategy Injection (IoC: strategies are plugged in) ---
+
+      // Robot1: random valid moves
+      const Robot1 = {
+        name: "Robot1",
+        makeMove(accounts) {
+          const nonEmpty = accounts
+            .map((v, i) => ({ v, i }))
+            .filter((x) => x.v > 0);
+          if (nonEmpty.length === 0) return null;
+          const pick = nonEmpty[Math.floor(Math.random() * nonEmpty.length)];
+          const amount = Math.floor(Math.random() * pick.v) + 1;
+          return { account: pick.i, amount };
+        },
+      };
+
+      // Robot2: tries smart move but sometimes makes mistakes (~30% error rate)
+      const Robot2 = {
+        name: "Robot2",
+        makeMove(accounts) {
+          // 30% chance of random mistake
+          if (Math.random() < 0.3) return Robot1.makeMove(accounts);
+          return smartMove(accounts) || Robot1.makeMove(accounts);
+        },
+      };
+
+      // Robot3: perfect play, no mistakes
+      const Robot3 = {
+        name: "Robot3",
+        makeMove(accounts) {
+          return smartMove(accounts) || Robot1.makeMove(accounts);
+        },
+      };
+
+      // Smart move: Nim optimal strategy using XOR
+      function smartMove(accounts) {
+        const xor = equilibrium(...accounts);
+        if (xor === 0) {
+          // Losing position: make the longest move (take 1 from largest)
+          const maxIdx = accounts.indexOf(Math.max(...accounts));
+          if (accounts[maxIdx] === 0) return null;
+          return { account: maxIdx, amount: 1 };
+        }
+        // Winning: find account where (account XOR xor) < account
+        for (let i = 0; i < 3; i++) {
+          const target = accounts[i] ^ xor;
+          if (target < accounts[i]) {
+            return { account: i, amount: accounts[i] - target };
+          }
+        }
+        return null;
+      }
+
+      // Bot registry (IoC: resolved by name at runtime)
+      function resolveBot(name) {
+        const n = name.toLowerCase().trim();
+        if (n === "robo1") return Robot1;
+        if (n === "robo2") return Robot2;
+        if (n === "robo3") return Robot3;
+        return null;
+      }
+
+      // ============================================================
+      //  Game Controller
+      // ============================================================
+
+      function startGame() {
+        const pName =
+          document.getElementById("playerName").value.trim() || "Player";
+        const oName =
+          document.getElementById("opponentName").value.trim() || "Robo1";
+        const a = parseInt(document.getElementById("initA").value) || 0;
+        const b = parseInt(document.getElementById("initB").value) || 0;
+        const c = parseInt(document.getElementById("initC").value) || 0;
+
+        if (a === 0 && b === 0 && c === 0) {
+          alert("Please set at least one non-zero account!");
+          return;
+        }
+
+        state.accounts = [a, b, c];
+        state.playerName = pName;
+        state.opponentName = oName;
+        state.botType = resolveBot(oName);
+        state.currentPlayer = 0;
+        state.gameOver = false;
+        state.moveCount = 0;
+
+        document.getElementById("setupPanel").style.display = "none";
+        document.getElementById("gameArea").style.display = "block";
+        document.getElementById("winnerBanner").classList.remove("show");
+        document.getElementById("gameLog").innerHTML = "";
+        document.getElementById("hintBox").style.display = "none";
+
+        logEntry(`⚡ Game started! ${pName} vs ${oName}`, "system");
+        logEntry(
+          `📊 Accounts: A=${a}, B=${b}, C=${c} | XOR=${equilibrium(a, b, c)}`,
+          "system",
+        );
+        renderState();
+      }
+
+      function renderState() {
+        const [a, b, c] = state.accounts;
+        document.getElementById("valA").textContent = a;
+        document.getElementById("valB").textContent = b;
+        document.getElementById("valC").textContent = c;
+
+        const xor = equilibrium(a, b, c);
+        const xorEl = document.getElementById("xorDisplay");
+        xorEl.textContent = `XOR = ${xor}`;
+        xorEl.className =
+          "xor-display " + (xor === 0 ? "xor-zero" : "xor-nonzero");
+
+        const turnEl = document.getElementById("turnIndicator");
+        if (!state.gameOver) {
+          if (state.currentPlayer === 0) {
+            turnEl.textContent = `${state.playerName}'s TURN`;
+            turnEl.className = "turn-indicator turn-player";
+          } else {
+            turnEl.textContent = `${state.opponentName}'s TURN`;
+            turnEl.className = "turn-indicator turn-bot";
+          }
+        }
+
+        document.getElementById("moveBtn").disabled =
+          state.gameOver || state.currentPlayer !== 0;
+      }
+
+      function applyMove(playerIndex, accountIdx, amount) {
+        state.accounts[accountIdx] -= amount;
+        state.moveCount++;
+
+        const who = playerIndex === 0 ? state.playerName : state.opponentName;
+        const accName = ["A", "B", "C"][accountIdx];
+        const cls = playerIndex === 0 ? "player" : "bot";
+        logEntry(
+          `${who} → transferred ${amount} from Account ${accName} | Remaining: [${state.accounts.join(", ")}] | XOR=${equilibrium(...state.accounts)}`,
+          cls,
+        );
+      }
+
+      function checkGameOver() {
+        if (state.accounts.every((v) => v === 0)) {
+          // Current player can't move → they lose
+          const loser = state.currentPlayer;
+          const winner = loser === 0 ? 1 : 0;
+          const winnerName =
+            winner === 0 ? state.playerName : state.opponentName;
+          const loserName = loser === 0 ? state.playerName : state.opponentName;
+
+          state.gameOver = true;
+          document.getElementById("winnerName").textContent = winnerName;
+          document.getElementById("winnerSub").textContent =
+            `${loserName} is FIRED! 🔥`;
+          document.getElementById("winnerBanner").classList.add("show");
+          document.getElementById("turnIndicator").textContent = "GAME OVER";
+          document.getElementById("moveBtn").disabled = true;
+          logEntry(`🏆 ${winnerName} WINS! ${loserName} is fired!`, "winner");
+          return true;
+        }
+        return false;
+      }
+
+      function switchTurn() {
+        state.currentPlayer = state.currentPlayer === 0 ? 1 : 0;
+      }
+
+      // Human move
+      function playerMove() {
+        if (state.gameOver || state.currentPlayer !== 0) return;
+
+        const accIdx = parseInt(document.getElementById("chooseAccount").value);
+        const amount = parseInt(document.getElementById("moveAmount").value);
+
+        if (isNaN(amount) || amount <= 0) {
+          alert("Enter a positive amount!");
+          return;
+        }
+        if (amount > state.accounts[accIdx]) {
+          alert(
+            `Account ${["A", "B", "C"][accIdx]} only has ${state.accounts[accIdx]} coins!`,
+          );
+          return;
+        }
+
+        document.getElementById("hintBox").style.display = "none";
+        applyMove(0, accIdx, amount);
+        renderState();
+        if (checkGameOver()) return;
+
+        switchTurn();
+        renderState();
+
+        // Bot moves after short delay
+        if (state.botType) {
+          document.getElementById("moveBtn").disabled = true;
+          setTimeout(botTurn, 900);
+        }
+      }
+
+      // Bot move
+      function botTurn() {
+        if (state.gameOver || state.currentPlayer !== 1) return;
+
+        const move = state.botType.makeMove([...state.accounts]);
+        if (!move) {
+          checkGameOver();
+          return;
+        }
+
+        applyMove(1, move.account, move.amount);
+        renderState();
+        if (checkGameOver()) return;
+
+        switchTurn();
+        renderState();
+        document.getElementById("moveBtn").disabled = false;
+      }
+
+      // Hint: show optimal move for human
+      function showHint() {
+        const hintBox = document.getElementById("hintBox");
+        const move = smartMove([...state.accounts]);
+        const xor = equilibrium(...state.accounts);
+        if (!move) {
+          hintBox.innerHTML = `⚠️ XOR = ${xor} (=0). You're in a <strong>losing position</strong> if opponent plays perfectly. Try to delay by taking 1 from any account.`;
+        } else {
+          const accName = ["A", "B", "C"][move.account];
+          hintBox.innerHTML = `💡 XOR = ${xor} ≠ 0 → <strong>winning position!</strong> Transfer <strong>${move.amount}</strong> from Account <strong>${accName}</strong> to reach XOR=0.`;
+        }
+        hintBox.style.display = "block";
+      }
+
+      function resetGame() {
+        document.getElementById("setupPanel").style.display = "block";
+        document.getElementById("gameArea").style.display = "none";
+        document.getElementById("winnerBanner").classList.remove("show");
+      }
+
+      function randomAccounts() {
+        document.getElementById("initA").value =
+          Math.floor(Math.random() * 9) + 1;
+        document.getElementById("initB").value =
+          Math.floor(Math.random() * 9) + 1;
+        document.getElementById("initC").value =
+          Math.floor(Math.random() * 9) + 1;
+      }
+
+      function logEntry(msg, type = "system") {
+        const log = document.getElementById("gameLog");
+        const div = document.createElement("div");
+        div.className = `log-entry ${type}`;
+        const ts = new Date().toLocaleTimeString("en", {
+          hour12: false,
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        });
+        div.textContent = `[${ts}] ${msg}`;
+        log.appendChild(div);
+        log.scrollTop = log.scrollHeight;
+      }
+
+      // Keyboard shortcut: Enter = transfer
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !state.gameOver && state.currentPlayer === 0) {
+          playerMove();
+        }
+      });
+    </script>
+  </body>
+</html>
