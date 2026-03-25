@@ -26,18 +26,18 @@
 
     <!-- LEGEND -->
     <div class="legend">
-      <h3>📋 Правила игры</h3>
-      <strong>Сценарий:</strong> Финансовая компания с 3 счетами в кризисе.
-      Два менеджера по очереди переводят средства в блокчейн. Менеджер, который
-      <strong>не может сделать ход</strong> (все счета обнулены), — <strong>уволен</strong>.<br /><br />
-      <strong>Правила:</strong> В свой ход выбери любой счёт с монетами и переведи любое ненулевое количество.
-      Тот, кто переводит последние монеты — <strong>побеждает</strong>, другой уволен!<br /><br />
-      <strong>Стратегия (XOR-нейм):</strong>
-      XOR всех трёх счетов = ваш «индикатор позиции».<br />
-      <span style="color:var(--safe)">● XOR ≠ 0</span> — вы в <strong style="color:var(--safe)">выигрышной
-        позиции</strong> (можно навязать XOR=0 сопернику).<br />
-      <span style="color:var(--danger)">● XOR = 0</span> — вы в <strong style="color:var(--danger)">проигрышной
-        позиции</strong> при идеальной игре соперника.
+      <h3>📋 Game Rules</h3>
+      <strong>Scenario:</strong> A financial firm has 3 accounts in crisis.
+      Two managers take turns moving funds to the blockchain. The manager who
+      <strong>cannot make a move</strong> (all accounts zero) is <strong>fired</strong>.<br /><br />
+      <strong>Rules:</strong> On your turn choose any non-empty account and transfer a positive amount.
+      The player who transfers the last coins <strong>wins</strong>, the other is fired!<br /><br />
+      <strong>Strategy (XOR Nim):</strong>
+      XOR of all three accounts is your position indicator.<br />
+      <span style="color:var(--safe)">● XOR ≠ 0</span> — you are in a <strong style="color:var(--safe)">winning
+        position</strong> (can force XOR=0 for opponent).<br />
+      <span style="color:var(--danger)">● XOR = 0</span> — you are in a <strong style="color:var(--danger)">losing
+        position</strong> against perfect play.
     </div>
 
     <!-- SETUP -->
@@ -52,33 +52,33 @@
 
       <div class="field-row">
         <div class="field">
-          <label>Имя игрока 1</label>
-          <input type="text" id="playerName" value="Manager A" placeholder="Ваше имя" />
+          <label>Player 1 Name</label>
+          <input type="text" id="playerName" value="Manager A" placeholder="Your name" />
         </div>
         <div class="field">
-          <label id="opp-label">Имя соперника / Тип бота</label>
-          <input type="text" id="opponentName" value="Robo3" placeholder="Robo1 / Robo2 / Robo3 / имя" />
+          <label id="opp-label">Opponent Name / Bot Type</label>
+          <input type="text" id="opponentName" value="Robo3" placeholder="Robo1 / Robo2 / Robo3 / name" />
         </div>
       </div>
       <div class="info-box" id="botInfo">
-        Введите <strong>Robo1</strong> — случайный бот &middot;
-        <strong>Robo2</strong> — умный с ошибками (30%) &middot;
-        <strong>Robo3</strong> — идеальная игра
+        Enter <strong>Robo1</strong> — random bot &middot;
+        <strong>Robo2</strong> — smart with mistakes (30%) &middot;
+        <strong>Robo3</strong> — perfect play
       </div>
 
       <hr />
-      <div class="panel-title">Начальные счета</div>
+      <div class="panel-title">Initial Accounts</div>
       <div class="accounts-row">
         <div class="account-card">
-          <div class="account-label">Счет A</div>
+          <div class="account-label">Account A</div>
           <input type="number" class="account-input" id="initA" value="7" min="0" max="99" />
         </div>
         <div class="account-card">
-          <div class="account-label">Счет B</div>
+          <div class="account-label">Account B</div>
           <input type="number" class="account-input" id="initB" value="5" min="0" max="99" />
         </div>
         <div class="account-card">
-          <div class="account-label">Счет C</div>
+          <div class="account-label">Account C</div>
           <input type="number" class="account-input" id="initC" value="3" min="0" max="99" />
         </div>
       </div>
@@ -89,7 +89,7 @@
         <button class="btn btn-ghost" onclick="randomAccounts(true)">🎯 Fair Start</button>
       </div>
       <div class="info-box" style="margin-top:10px">
-        <strong>Fair Start</strong> — генерирует позицию с XOR≠0 (выгодна первому игроку).
+        <strong>Fair Start</strong> — generates a position with XOR≠0 (favors first player).
       </div>
     </div>
 
@@ -123,15 +123,15 @@
         <!-- Accounts (clickable) -->
         <div class="accounts-row" id="accountsDisplay">
           <div class="account-card selected-account" id="cardA" onclick="selectAccount(0)">
-            <div class="account-label">Счет A</div>
+            <div class="account-label">Account A</div>
             <div class="account-val" id="valA">0</div>
           </div>
           <div class="account-card" id="cardB" onclick="selectAccount(1)">
-            <div class="account-label">Счет B</div>
+            <div class="account-label">Account B</div>
             <div class="account-val" id="valB">0</div>
           </div>
           <div class="account-card" id="cardC" onclick="selectAccount(2)">
-            <div class="account-label">Счет C</div>
+            <div class="account-label">Account C</div>
             <div class="account-val" id="valC">0</div>
           </div>
         </div>
@@ -139,7 +139,7 @@
         <!-- Move controls -->
         <div class="move-section">
           <div class="field" style="min-width:200px">
-            <label>Сумма перевода</label>
+            <label>Transfer Amount</label>
             <div class="slider-row">
               <input type="range" id="moveSlider" min="1" max="1" value="1" oninput="syncAmount('slider')" />
               <input type="number" id="moveAmount" value="1" min="1" style="width:90px;flex-shrink:0"

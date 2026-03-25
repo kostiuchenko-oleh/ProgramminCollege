@@ -83,11 +83,11 @@ function selectMode(mode) {
     const oppLabel = document.getElementById('opp-label');
     const botInfo = document.getElementById('botInfo');
     if (mode === 'pvp') {
-        oppLabel.textContent = 'Имя игрока 2';
+        oppLabel.textContent = 'Player 2 Name';
         document.getElementById('opponentName').value = 'Manager B';
         botInfo.style.display = 'none';
     } else {
-        oppLabel.textContent = 'Имя соперника / Тип бота';
+        oppLabel.textContent = 'Opponent Name / Bot Type';
         document.getElementById('opponentName').value = 'Robo3';
         botInfo.style.display = 'block';
     }
@@ -212,7 +212,7 @@ function startGame() {
     const c = Math.max(0, parseInt(document.getElementById("initC").value) || 0);
 
     if (a === 0 && b === 0 && c === 0) {
-        alert("Установите хотя бы один ненулевой счет!");
+        alert("Please set at least one non-zero account!");
         return;
     }
 
@@ -239,8 +239,8 @@ function startGame() {
     document.getElementById("hintBox").style.display = "none";
     document.getElementById("undoBtn").style.display = state.botType ? 'inline-block' : 'none';
 
-    logEntry(`⚡ Игра начата! ${pName} vs ${oName} | Режим: ${selectedMode === 'pvp' ? '2 игрока' : 'vs Bot'}`, "system");
-    logEntry(`📊 Счета: A=${a}, B=${b}, C=${c} | XOR=${xorSum(a, b, c)}`, "system");
+    logEntry(`⚡ Game started! ${pName} vs ${oName} | Mode: ${selectedMode === 'pvp' ? '2 Players' : 'vs Bot'}`, "system");
+    logEntry(`📊 Accounts: A=${a}, B=${b}, C=${c} | XOR=${xorSum(a, b, c)}`, "system");
     renderState();
 }
 
@@ -260,7 +260,7 @@ function applyMove(playerIndex, accountIdx, amount) {
     const who = playerIndex === 0 ? state.playerName : state.opponentName;
     const accName = ["A", "B", "C"][accountIdx];
     const cls = playerIndex === 0 ? "player" : "bot";
-    logEntry(`${who} → перевёл ${amount} со счета ${accName} | Остаток: [${state.accounts.join(", ")}] | XOR=${xorSum(...state.accounts)}`, cls);
+    logEntry(`${who} → transferred ${amount} from account ${accName} | Remaining: [${state.accounts.join(", ")}] | XOR=${xorSum(...state.accounts)}`, cls);
 }
 
 function checkGameOver() {
@@ -277,12 +277,12 @@ function checkGameOver() {
         state.gameOver = true;
 
         document.getElementById("winnerName").textContent = winnerName;
-        document.getElementById("winnerSub").textContent = `${loserName} — УВОЛЕН! 🔥`;
+        document.getElementById("winnerSub").textContent = `${loserName} — FIRED! 🔥`;
         document.getElementById("winnerBanner").classList.add("show");
         document.getElementById("turnIndicator").textContent = "GAME OVER";
         document.getElementById("turnIndicator").className = "turn-indicator";
         document.getElementById("moveBtn").disabled = true;
-        logEntry(`🏆 ${winnerName} ПОБЕЖДАЕТ! ${loserName} уволен!`, "winner");
+        logEntry(`🏆 ${winnerName} WINS! ${loserName} is fired!`, "winner");
         updateScoreBoard();
         return true;
     }
@@ -306,9 +306,9 @@ function playerMove() {
     const accIdx = state.selectedAccount;
     const amount = parseInt(document.getElementById("moveAmount").value);
 
-    if (isNaN(amount) || amount <= 0) { alert("Введите положительную сумму!"); return; }
+    if (isNaN(amount) || amount <= 0) { alert("Enter a positive amount!"); return; }
     if (amount > state.accounts[accIdx]) {
-        alert(`На счете ${["A", "B", "C"][accIdx]} только ${state.accounts[accIdx]} монет!`);
+        alert(`Account ${["A", "B", "C"][accIdx]} only has ${state.accounts[accIdx]} coins!`);
         return;
     }
 
@@ -353,7 +353,7 @@ function undoMove() {
         if (state.accounts[i] > 0) { state.selectedAccount = i; break; }
     }
     document.getElementById("hintBox").style.display = "none";
-    logEntry("↩ Ход отменён", "system");
+    logEntry("↩ Move undone", "system");
     renderState();
 }
 
@@ -364,11 +364,11 @@ function showHint() {
     const move = smartMove([...state.accounts]);
     if (xor === 0) {
         hintBox.className = "info-box hint-lose";
-        hintBox.innerHTML = `⚠️ XOR = 0 — вы в <strong>проигрышной позиции</strong> при идеальной игре соперника. Постарайтесь взять 1 с наибольшего счета.`;
+        hintBox.innerHTML = `⚠️ XOR = 0 — you are in a <strong>losing position</strong> with perfect opponent play. Try taking 1 from the largest account.`;
     } else {
         const accName = ["A", "B", "C"][move.account];
         hintBox.className = "info-box hint-win";
-        hintBox.innerHTML = `💡 XOR = ${xor} ≠ 0 → <strong>выигрышная позиция!</strong> Переведи <strong>${move.amount}</strong> со счета <strong>${accName}</strong>, чтобы XOR стал 0.`;
+        hintBox.innerHTML = `💡 XOR = ${xor} ≠ 0 — <strong>winning position!</strong> Transfer <strong>${move.amount}</strong> from account <strong>${accName}</strong> to make XOR = 0.`;
     }
     hintBox.style.display = "block";
 }
